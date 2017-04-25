@@ -62,16 +62,16 @@ void rt_put_prio (P_XCB p_CB, P_TCB p_task) {
   /* "p_CB" points to head of list; list has always an element at end with  */
   /* a priority less than "p_task->prio".                                   */
   P_TCB p_CB2;
-  U32 prio;
+  U16 prio;
   BOOL sem_mbx = __FALSE;
 
   if ((p_CB->cb_type == SCB) || (p_CB->cb_type == MCB) || (p_CB->cb_type == MUCB)) {
     sem_mbx = __TRUE;
   }
-  prio = p_task->prio;
+  prio = p_task->relative_deadline;
   p_CB2 = p_CB->p_lnk;
   /* Search for an entry in the list */
-  while ((p_CB2 != NULL) && (prio <= p_CB2->prio)) {
+  while ((p_CB2 != NULL) && (prio >= p_CB2->relative_deadline)) { // GMK
     p_CB = (P_XCB)p_CB2;
     p_CB2 = p_CB2->p_lnk;
   }

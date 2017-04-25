@@ -364,7 +364,7 @@ static uint32_t thread_stack_main[DEFAULT_STACK_SIZE * 6 / sizeof(uint32_t)];
 #else
 static uint32_t thread_stack_main[DEFAULT_STACK_SIZE * 2 / sizeof(uint32_t)];
 #endif
-osThreadDef_t os_thread_def_main = {(os_pthread)pre_main, osPriorityNormal, 0, 0xffff, 1U, sizeof(thread_stack_main), thread_stack_main}; //TODO
+osThreadDef_t os_thread_def_main = {(os_pthread)pre_main, osPriorityNormal, 0, (0xffff-2), 1U, sizeof(thread_stack_main), thread_stack_main}; //TODO
 
 /*
  * IAR Default Memory layout notes:

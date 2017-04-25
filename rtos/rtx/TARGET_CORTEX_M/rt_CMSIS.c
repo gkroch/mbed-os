@@ -758,7 +758,7 @@ osStatus svcThreadTerminate (osThreadId thread_id) {
 
 /// Pass control to next thread that is in state READY
 osStatus svcThreadYield (void) {
-  rt_tsk_pass();                                // Pass control to next task
+  rt_block(os_tsk.run->interval_time,WAIT_DLY);                                // Pass control to next task GMK
   return osOK;
 }
 

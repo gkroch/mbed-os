@@ -122,7 +122,7 @@ void rt_dispatch (P_TCB next_TCB) {
   }
   else {
     /* Check which task continues */
-    if (next_TCB->prio > os_tsk.run->prio) {
+    if (next_TCB->relative_deadline < os_tsk.run->relative_deadline) { // GMK
       /* preempt running task */
       rt_put_rdy_first (os_tsk.run);
       os_tsk.run->state = READY;
@@ -250,12 +250,14 @@ OS_TID rt_tsk_create (FUNCP task, U32 prio_stksz, U16 period, U16 deadline, void
   task_context->msg = argv;
   task_context->argv = argv;
 
-	//GMK
-	rt_itv_set(period); // Set period (delay and interval)
-	task_context->relative_deadline = deadline; // set deadline
-	
   /* For 'size == 0' system allocates the user stack from the memory pool. */
   rt_init_context (task_context, (U8)(prio_stksz & 0xFFU), task);
+
+		//GMK
+	//	rt_itv_set(period); // Set period (delay and interval)
+	task_context->interval_time = period;
+	task_context->delta_time = period + (U16)os_time;
+	task_context->relative_deadline = deadline; // set deadline
 
   os_active_TCB[i-1U] = task_context;
   DBG_TASK_NOTIFY(task_context, __TRUE);
@@ -395,6 +397,8 @@ void rt_sys_init (FUNCP first_task, U32 prio_stksz, void *stk) {
   os_idle_TCB.task_id    = 255U;
   os_idle_TCB.priv_stack = 0U;
   rt_init_context (&os_idle_TCB, 0U, os_idle_demon);
+	os_idle_TCB.interval_time = 0;
+	os_idle_TCB.relative_deadline = 0xffff-1;
 
   /* Set up ready list: initially empty */
   os_rdy.cb_type = HCB;

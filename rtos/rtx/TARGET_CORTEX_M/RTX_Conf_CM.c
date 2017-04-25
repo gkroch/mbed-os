@@ -153,7 +153,7 @@
 //
 // <i> Enables Round-Robin Thread switching.
 #ifndef OS_ROBIN
- #define OS_ROBIN       1
+#define OS_ROBIN       0 // GMK
 #endif
 
 //   <o>Round-Robin Timeout [ticks] <1-1000>
