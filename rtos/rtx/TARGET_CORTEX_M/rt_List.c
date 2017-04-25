@@ -55,7 +55,7 @@ struct OS_XCB  os_dly;
  *---------------------------------------------------------------------------*/
 
 
-/*--------------------------- rt_put_prio -----------------------------------*/
+/*--------------------------- rt_put_prio ---GMK-----------------------------*/
 
 void rt_put_prio (P_XCB p_CB, P_TCB p_task) {
   /* Put task identified with "p_task" into list ordered by priority.       */

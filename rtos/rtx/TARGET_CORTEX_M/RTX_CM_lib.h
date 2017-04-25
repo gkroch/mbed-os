@@ -171,9 +171,9 @@ void *os_active_TCB[OS_TASK_CNT];
 #if (OS_TIMERS != 0)
 extern void osTimerThread (void const *argument);
 #ifdef __MBED_CMSIS_RTOS_CM
-osThreadDef(osTimerThread, (osPriority)(OS_TIMERPRIO-3), 4*OS_TIMERSTKSZ);
+osThreadDef(osTimerThread, (osPriority)(OS_TIMERPRIO-3), 0, 0xffff, 4*OS_TIMERSTKSZ); // TODO
 #else
-osThreadDef(osTimerThread, (osPriority)(OS_TIMERPRIO-3), 1, 4*OS_TIMERSTKSZ);
+osThreadDef(osTimerThread, (osPriority)(OS_TIMERPRIO-3), 0, 0xffff, 1, 4*OS_TIMERSTKSZ); // TODO
 #endif
 osThreadId osThreadId_osTimerThread;
 osMessageQDef(osTimerMessageQ, OS_TIMERCBQS, void *);
@@ -364,7 +364,7 @@ static uint32_t thread_stack_main[DEFAULT_STACK_SIZE * 6 / sizeof(uint32_t)];
 #else
 static uint32_t thread_stack_main[DEFAULT_STACK_SIZE * 2 / sizeof(uint32_t)];
 #endif
-osThreadDef_t os_thread_def_main = {(os_pthread)pre_main, osPriorityNormal, 1U, sizeof(thread_stack_main), thread_stack_main};
+osThreadDef_t os_thread_def_main = {(os_pthread)pre_main, osPriorityNormal, 0, 0xffff, 1U, sizeof(thread_stack_main), thread_stack_main}; //TODO
 
 /*
  * IAR Default Memory layout notes:

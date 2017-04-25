@@ -59,6 +59,8 @@ typedef struct OS_TCB {
   U8     cb_type;                 /* Control Block Type                      */
   U8     state;                   /* Task state                              */
   U8     prio;                    /* Execution priority                      */
+	//	U16    relative_deadline;       /* Relative deadline for tsk complete-GMK  */
+	//	U16    absolute_deadline;       /* Absolute deadline for tsk complete-GMK  */
   U8     task_id;                 /* Task ID value for optimized TCB access  */
   struct OS_TCB *p_lnk;           /* Link pointer for ready/sem. wait list   */
   struct OS_TCB *p_rlnk;          /* Link pointer for sem./mbx lst backwards */
@@ -74,8 +76,9 @@ typedef struct OS_TCB {
 
   /* Hardware dependant part: specific for CM processor                      */
   U8     stack_frame;             /* Stack frame: 0=Basic, 1=Extended,       */
-  U16    reserved;                /* Two reserved bytes for alignment        */
+	//  U16    reserved;                /* Two reserved bytes for alignment        */
                                   /* (2=VFP/D16 stacked, 4=NEON/D32 stacked) */
+	U16    relative_deadline;       /* Relative deadline GMK (replace reserv)  */
   U32    priv_stack;              /* Private stack size, 0= system assigned  */
   U32    tsk_stack;               /* Current task Stack pointer (R13)        */
   U32    *stack;                  /* Pointer to Task Stack memory block      */

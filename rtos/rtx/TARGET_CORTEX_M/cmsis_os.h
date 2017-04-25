@@ -209,10 +209,12 @@ typedef struct os_mailQ_cb *osMailQId;
 /// Thread enumeration ID identifies the enumeration (pointer to a thread enumeration control block).
 typedef uint32_t *osThreadEnumId;
 
-/// Thread Definition structure contains startup information of a thread.
+/// Thread Definition structure contains startup information of a thread. GMK
 typedef struct os_thread_def  {
   os_pthread               pthread;    ///< start address of thread function
   osPriority             tpriority;    ///< initial thread priority
+	uint16_t                  period;    ///< thread period GMK
+	uint16_t                deadline;    ///< thread deadline GMK
   uint32_t               instances;    ///< maximum number of instances of that thread function
   uint32_t               stacksize;    ///< stack size requirements in bytes; 0 is default stack size
 #ifdef __MBED_CMSIS_RTOS_CM
@@ -323,15 +325,15 @@ uint32_t osKernelSysTick (void);
 #define osThreadDef(name, priority, instances, stacksz)  \
 extern const osThreadDef_t os_thread_def_##name
 #else                            // define the object
-#ifdef __MBED_CMSIS_RTOS_CM
-#define osThreadDef(name, priority, stacksz)  \
+#ifdef __MBED_CMSIS_RTOS_CM // GMK
+#define osThreadDef(name, priority, period, deadline, stacksz)			\
 uint32_t os_thread_def_stack_##name [stacksz / sizeof(uint32_t)]; \
 const osThreadDef_t os_thread_def_##name = \
-{ (name), (priority), 1, (stacksz), (os_thread_def_stack_##name) }
+	{ (name), (priority), (period), (deadline), 1, (stacksz), (os_thread_def_stack_##name) }
 #else
-#define osThreadDef(name, priority, instances, stacksz)  \
+#define osThreadDef(name, priority, period, deadline, instances, stacksz) \
 const osThreadDef_t os_thread_def_##name = \
-{ (name), (priority), (instances), (stacksz)  }
+	{ (name), (priority), (period), (deadline), (instances), (stacksz)  }
 #endif
 #endif
 

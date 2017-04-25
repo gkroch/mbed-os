@@ -194,12 +194,15 @@ public:
                     priority, stack_size, stack_pointer);
     }
 
-    /** Starts a thread executing the specified function.
+    /** Starts a thread executing the specified function. GMK
       @param   task           function to be executed by this thread.
+			@param   period         indicates period at which thread runs
+			@param   deadline       how long until thread must conclude
       @return  status code that indicates the execution status of the function.
       @note a thread can only be started once
     */
-    osStatus start(mbed::Callback<void()> task);
+    osStatus start(mbed::Callback<void()> task,
+									 uint16_t period, uint16_t deadline);
 
     /** Starts a thread executing the specified function.
       @param   obj            argument to task

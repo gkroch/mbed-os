@@ -682,6 +682,8 @@ osThreadId svcThreadCreate (const osThreadDef_t *thread_def, void *argument, voi
     (uint32_t)
     (thread_def->tpriority-osPriorityIdle+1) |  // Task priority
     (thread_def->stacksize << 8),               // Task stack size in bytes
+		thread_def->period,                         // Task period - GMK
+		thread_def->deadline,                       // Task deadline - GMK
     stk,                                        // Pointer to task's stack
     argument                                    // Argument to the task
   );

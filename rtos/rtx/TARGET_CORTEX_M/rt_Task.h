@@ -72,7 +72,8 @@ extern void      rt_block      (U16 timeout, U8 block_state);
 extern void      rt_tsk_pass   (void);
 extern OS_TID    rt_tsk_self   (void);
 extern OS_RESULT rt_tsk_prio   (OS_TID task_id, U8 new_prio);
-extern OS_TID    rt_tsk_create (FUNCP task, U32 prio_stksz, void *stk, void *argv);
+extern OS_TID    rt_tsk_create (FUNCP task, U32 prio_stksz,
+																U16 period, U16 deadline, void *stk, void *argv); // GMK
 extern OS_RESULT rt_tsk_delete (OS_TID task_id);
 #ifdef __CMSIS_RTOS
 extern void      rt_sys_init   (void);

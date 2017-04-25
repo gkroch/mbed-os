@@ -41,6 +41,7 @@
 #include "rt_Robin.h"
 #include "rt_HAL_CM.h"
 #include "rt_OsEventObserver.h"
+#include "rt_Time.h" // GMK
 
 /*----------------------------------------------------------------------------
  *      Global Variables
@@ -222,7 +223,7 @@ run:if (rt_rdy_prio() > new_prio) {
 
 /*--------------------------- rt_tsk_create ---------------------------------*/
 
-OS_TID rt_tsk_create (FUNCP task, U32 prio_stksz, void *stk, void *argv) {
+OS_TID rt_tsk_create (FUNCP task, U32 prio_stksz, U16 period, U16 deadline, void *stk, void *argv) {
   /* Start a new task declared with "task". */
   P_TCB task_context;
   U32 i;
@@ -248,6 +249,11 @@ OS_TID rt_tsk_create (FUNCP task, U32 prio_stksz, void *stk, void *argv) {
   /* Pass parameter 'argv' to 'rt_init_context' */
   task_context->msg = argv;
   task_context->argv = argv;
+
+	//GMK
+	rt_itv_set(period); // Set period (delay and interval)
+	task_context->relative_deadline = deadline; // set deadline
+	
   /* For 'size == 0' system allocates the user stack from the memory pool. */
   rt_init_context (task_context, (U8)(prio_stksz & 0xFFU), task);
 
@@ -429,7 +435,7 @@ void rt_sys_init (FUNCP first_task, U32 prio_stksz, void *stk) {
   }
 
   /* Start up first user task before entering the endless loop */
-  rt_tsk_create (first_task, prio_stksz, stk, NULL);
+  rt_tsk_create (first_task, prio_stksz, 0U, 0U, stk, NULL); // GMK - Should not reach
 #endif
 }
 

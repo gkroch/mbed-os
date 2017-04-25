@@ -54,11 +54,13 @@ void Thread::constructor(osPriority priority,
 #endif
 }
 
+	// GMK
 void Thread::constructor(Callback<void()> task,
-        osPriority priority, uint32_t stack_size, unsigned char *stack_pointer) {
+												 osPriority priority,
+												 uint32_t stack_size, unsigned char *stack_pointer) {
     constructor(priority, stack_size, stack_pointer);
 
-    switch (start(task)) {
+    switch (start(task,0,0)) {
         case osErrorResource:
             error("OS ran out of threads!\n");
             break;
@@ -72,7 +74,8 @@ void Thread::constructor(Callback<void()> task,
     }
 }
 
-osStatus Thread::start(Callback<void()> task) {
+	osStatus Thread::start(Callback<void()> task,
+												 uint16_t period, uint16_t deadline) { // GMK
     _mutex.lock();
 
     if ((_tid != 0) || _finished) {
@@ -82,6 +85,9 @@ osStatus Thread::start(Callback<void()> task) {
 
 #if defined(__MBED_CMSIS_RTOS_CA9) || defined(__MBED_CMSIS_RTOS_CM)
     _thread_def.pthread = Thread::_thunk;
+		_thread_def.period = period; // GMK
+		_thread_def.deadline = deadline; // GMK
+		
     if (_thread_def.stack_pointer == NULL) {
         _thread_def.stack_pointer = new uint32_t[_thread_def.stacksize/sizeof(uint32_t)];
         MBED_ASSERT(_thread_def.stack_pointer != NULL);
