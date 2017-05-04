@@ -122,7 +122,7 @@ void rt_dispatch (P_TCB next_TCB) {
   }
   else {
     /* Check which task continues */
-    if (next_TCB->relative_deadline < os_tsk.run->relative_deadline) { // GMK
+    if (next_TCB->absolute_deadline < os_tsk.run->absolute_deadline) { // GMK
       /* preempt running task */
       rt_put_rdy_first (os_tsk.run);
       os_tsk.run->state = READY;
@@ -258,6 +258,8 @@ OS_TID rt_tsk_create (FUNCP task, U32 prio_stksz, U16 period, U16 deadline, void
 	task_context->interval_time = period;
 	task_context->delta_time = period + (U16)os_time;
 	task_context->relative_deadline = deadline; // set deadline
+	task_context->absolute_deadline = deadline + (U16)os_time;
+	task_context->base_deadline = task_context->absolute_deadline;
 
   os_active_TCB[i-1U] = task_context;
   DBG_TASK_NOTIFY(task_context, __TRUE);
@@ -362,7 +364,7 @@ OS_RESULT rt_tsk_delete (OS_TID task_id) {
     task_context->stack = NULL;
     DBG_TASK_NOTIFY(task_context, __FALSE);
     rt_free_box (mp_tcb, task_context);
-    if (rt_rdy_prio() > os_tsk.run->prio) {
+    if (rt_rdy_prio() > os_tsk.run->absolute_deadline) {
       /* Ready task has higher priority than running task. */
       os_tsk.run->state = READY;
       rt_put_prio (&os_rdy, os_tsk.run);
@@ -399,6 +401,8 @@ void rt_sys_init (FUNCP first_task, U32 prio_stksz, void *stk) {
   rt_init_context (&os_idle_TCB, 0U, os_idle_demon);
 	os_idle_TCB.interval_time = 0;
 	os_idle_TCB.relative_deadline = 0xffff-1;
+	os_idle_TCB.absolute_deadline = 0xffff-1;
+	os_idle_TCB.base_deadline = 0xffff-1;	
 
   /* Set up ready list: initially empty */
   os_rdy.cb_type = HCB;

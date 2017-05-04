@@ -68,10 +68,10 @@ void rt_put_prio (P_XCB p_CB, P_TCB p_task) {
   if ((p_CB->cb_type == SCB) || (p_CB->cb_type == MCB) || (p_CB->cb_type == MUCB)) {
     sem_mbx = __TRUE;
   }
-  prio = p_task->relative_deadline;
+  prio = p_task->absolute_deadline;
   p_CB2 = p_CB->p_lnk;
   /* Search for an entry in the list */
-  while ((p_CB2 != NULL) && (prio >= p_CB2->relative_deadline)) { // GMK
+  while ((p_CB2 != NULL) && (prio >= p_CB2->absolute_deadline)) { // GMK
     p_CB = (P_XCB)p_CB2;
     p_CB2 = p_CB2->p_lnk;
   }
@@ -227,6 +227,9 @@ void rt_dec_dly (void) {
       }
       p_rdy->p_rlnk = NULL;
     }
+		// On addition to ready list, recalculate absolute_deadline
+		p_rdy->absolute_deadline = p_rdy->relative_deadline + (U16)os_time;
+		p_rdy->base_deadline = p_rdy->absolute_deadline;
     rt_put_prio (&os_rdy, p_rdy);
     os_dly.delta_time = p_rdy->delta_time;
     if (p_rdy->state == WAIT_ITV) {

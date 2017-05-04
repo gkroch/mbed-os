@@ -35,7 +35,7 @@
         .file   "HAL_CM3.S"
         .syntax unified
 
-        .equ    TCB_TSTACK, 44
+        .equ    TCB_TSTACK, 48 /* GMK changed from 44	*/
 
 
 /*----------------------------------------------------------------------------
@@ -209,7 +209,7 @@ SVC_Handler_Veneer:
 SVC_Next:
         STR     R2,[R3]                 /* os_tsk.run = os_tsk.new */
 
-        LDR     R12,[R2,#TCB_TSTACK]    /* os_tsk.new->tsk_stack */
+        LDR     R12,[R2,#TCB_TSTACK]    /* os_tsk.new->tsk_stack fails here*/
         LDMIA   R12!,{R4-R11}           /* Restore New Context */
         MSR     PSP,R12                 /* Write PSP */
 
